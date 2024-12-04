@@ -1,16 +1,85 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cryptoria: Decrypt, Sort, and Store Messages</title>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <h1>Cryptoria Message Decryption and Sorting</h1>
 
+  <script>
+    // Task 1: Decrypt message using Caesar's cipher
+    function decryptMessage(encryptedMessage, shift) {
+      let decryptedMessage = '';
+      for (let i = 0; i < encryptedMessage.length; i++) {
+        let char = encryptedMessage[i];
+        if (char.match(/[a-zA-Z]/)) {
+          let code = encryptedMessage.charCodeAt(i);
+          let base = char.toLowerCase() === char ? 97 : 65;  // For lowercase and uppercase
+          char = String.fromCharCode(((code - base - shift + 26) % 26) + base);  // Decrypting logic
+        }
+        decryptedMessage += char;
+      }
+      return decryptedMessage;
+    }
+
+    // Task 2: Sort messages by date using Merge sort
+    function mergeSort(arr) {
+      if (arr.length <= 1) return arr;
+
+      const mid = Math.floor(arr.length / 2);
+      const left = mergeSort(arr.slice(0, mid));
+      const right = mergeSort(arr.slice(mid));
+
+      return merge(left, right);
+    }
+
+    function merge(left, right) {
+      let result = [];
+      let leftIndex = 0;
+      let rightIndex = 0;
+
+      while (leftIndex < left.length && rightIndex < right.length) {
+        if (new Date(left[leftIndex].date) < new Date(right[rightIndex].date)) {
+          result.push(left[leftIndex]);
+          leftIndex++;
+        } else {
+          result.push(right[rightIndex]);
+          rightIndex++;
+        }
+      }
+
+      return result.concat(left.slice(leftIndex), right.slice(rightIndex));
+    }
+
+    // Task 3: Store messages in Local Storage
+    function storeMessages(messages) {
+      localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    // Example usage of the functions:
+    const encryptedMessages = [
+      { date: '2024-12-03', content: 'Uifsf!J!bnqmf!' },  // Example encrypted message: "There!I!ampld!"
+      { date: '2024-12-01', content: 'Dpef!b!gfsu!' },    // Example encrypted message: "Code!a!fgrt!"
+      { date: '2024-12-02', content: 'Mfu!n!gfojuf!' }     // Example encrypted message: "Let!m!flckf!"
+    ];
+
+    // Decrypting the messages
+    const shift = 1;  // Caesar cipher shift value
+    const decryptedMessages = encryptedMessages.map(msg => {
+      return { ...msg, content: decryptMessage(msg.content, shift) };
+    });
+
+    // Sorting the decrypted messages by date using Merge Sort
+    const sortedMessages = mergeSort(decryptedMessages);
+
+    // Storing the sorted messages in Local Storage
+    storeMessages(sortedMessages);
+
+    // Output for demonstration: logging the result
+    console.log('Decrypted and Sorted Messages:', sortedMessages);
+    console.log('Messages Stored in Local Storage:', JSON.parse(localStorage.getItem('messages')));
+  </script>
 </body>
-
 </html>
